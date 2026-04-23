@@ -14,5 +14,9 @@
     <FileVersion Condition="'$(FileVersion)' == ''">$(VersionPrefix).0</FileVersion>
     <InformationalVersion Condition="'$(InformationalVersion)' == ''">$(Version)</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>
+    <Deterministic Condition="'$(Deterministic)' == ''">true</Deterministic>
+    <EnableNETAnalyzers Condition="'$(EnableNETAnalyzers)' == ''">true</EnableNETAnalyzers>
+    <AnalysisLevel Condition="'$(AnalysisLevel)' == ''">latest-recommended</AnalysisLevel>
   </PropertyGroup>
 </Project>

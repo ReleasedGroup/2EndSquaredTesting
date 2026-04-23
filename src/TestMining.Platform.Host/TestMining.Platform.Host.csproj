@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TestMining.Platform.Analysis\TestMining.Platform.Analysis.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Application\TestMining.Platform.Application.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Artefacts\TestMining.Platform.Artefacts.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Contracts\TestMining.Platform.Contracts.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Generation\TestMining.Platform.Generation.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Healing\TestMining.Platform.Healing.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Persistence\TestMining.Platform.Persistence.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Recording\TestMining.Platform.Recording.csproj" />
+    <ProjectReference Include="..\TestMining.Platform.Replay\TestMining.Platform.Replay.csproj" />
+  </ItemGroup>
+</Project>

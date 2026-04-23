@@ -1,0 +1,10 @@
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+var app = builder.Build();
+
+app.MapGet("/", () => Results.Ok("TestMining Platform Host"));
+
+app.Run();
