@@ -1489,7 +1489,7 @@ The test mining platform shall be introduced into this repository as a new verti
 
 ### 22.2 Build System
 
-- The solution shall build with the .NET SDK pinned by the repository's existing tooling manifests (`Directory.Build.props`, `dotnet-tools.json`). Any SDK upgrade shall be an explicit, documented change.
+- The solution shall build with the repository's documented required .NET SDK version. Any SDK upgrade shall be an explicit, documented change.
 - `dotnet restore`, `dotnet build`, and `dotnet test` shall succeed from a clean checkout with no unresolved warnings treated as errors in core projects.
 - Projects shall enable nullable reference types and treat analyzer warnings as errors where practical.
 
