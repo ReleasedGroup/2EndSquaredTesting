@@ -111,6 +111,26 @@ public sealed class PlatformSolutionConformanceTests
         }
     }
 
+    [Fact(DisplayName = "Sections 22.1 and 22.2 require shared nullable, deterministic, and analyzer conventions across the platform scaffold")]
+    public void PlatformProjectsInheritSharedRepositoryBuildConventions()
+    {
+        var directoryBuildProps = XDocument.Load(Path.Combine(RepositoryRoot, "Directory.Build.props"));
+
+        Assert.Equal("enable", GetProjectPropertyValue(directoryBuildProps, "Nullable"));
+        Assert.Equal("true", GetProjectPropertyValue(directoryBuildProps, "Deterministic"));
+        Assert.Equal("true", GetProjectPropertyValue(directoryBuildProps, "EnableNETAnalyzers"));
+        Assert.Equal("latest-recommended", GetProjectPropertyValue(directoryBuildProps, "AnalysisLevel"));
+
+        foreach (var projectPath in GetExpectedProjectPaths())
+        {
+            var projectDocument = XDocument.Load(Path.Combine(RepositoryRoot, projectPath));
+
+            Assert.NotEqual("disable", GetProjectPropertyValue(projectDocument, "Nullable"));
+            Assert.NotEqual("false", GetProjectPropertyValue(projectDocument, "Deterministic"));
+            Assert.NotEqual("false", GetProjectPropertyValue(projectDocument, "EnableNETAnalyzers"));
+        }
+    }
+
     private static string[] GetExpectedProjectPaths() =>
     [
         "src/TestMining.Platform.Analysis/TestMining.Platform.Analysis.csproj",
@@ -144,6 +164,14 @@ public sealed class PlatformSolutionConformanceTests
 
         return current?.FullName ?? throw new InvalidOperationException("Unable to locate the repository root.");
     }
+
+    private static string? GetProjectPropertyValue(XDocument document, string propertyName) =>
+        document
+            .Root?
+            .Elements("PropertyGroup")
+            .Elements(propertyName)
+            .Select(node => node.Value.Trim())
+            .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
 
     private static string NormalizePath(string path) => path.Replace('\\', '/');
 }
