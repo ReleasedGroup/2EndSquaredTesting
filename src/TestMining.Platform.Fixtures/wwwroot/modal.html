@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fixture Modal</title>
+    <link rel="stylesheet" href="/assets/fixture-site.css" />
+</head>
+<body data-page="modal">
+    <div class="page-shell">
+        <section class="masthead">
+            <p class="eyebrow">Fixture modal workflow</p>
+            <div class="toolbar">
+                <div>
+                    <h1>Modal dialog and audit trail</h1>
+                    <p>Use this page to validate overlay interaction capture and toast feedback without leaving the host.</p>
+                </div>
+                <div class="status-pill" id="shared-status">Checking session...</div>
+            </div>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel">
+                <h2>Approval modal</h2>
+                <p>Open the modal, save notes, and inspect the appended audit trail entry.</p>
+                <button type="button" id="open-modal">Open approval modal</button>
+            </article>
+
+            <article class="panel">
+                <h2>Audit trail</h2>
+                <ol id="audit-trail"></ol>
+            </article>
+        </section>
+    </div>
+
+    <div class="dialog-backdrop" id="dialog-backdrop">
+        <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <h2 id="modal-title">Approve replay diagnostics</h2>
+            <p>Saving this modal appends a deterministic audit trail entry.</p>
+            <label for="modal-notes">Review notes</label>
+            <textarea id="modal-notes" rows="5">Approved after fixture validation.</textarea>
+            <div class="toolbar" style="margin-top: 1rem;">
+                <button type="button" id="save-modal">Save review</button>
+                <button type="button" class="secondary" id="close-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-stack" id="toast-stack"></div>
+    <script src="/assets/fixture-site.js"></script>
+</body>
+</html>

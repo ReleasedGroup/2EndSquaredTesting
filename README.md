@@ -84,6 +84,7 @@ The repository is in a planning and transition stage:
 - the requirements specification exists in `docs/requirements.md`
 - the concept source exists in `docs/concept.md`
 - the new application implementation may coexist with retained Symphony tooling content during development
+- the initial local developer bootstrap lives in `src/TestMining.Platform.Host`, `src/TestMining.Platform.Fixtures`, and [docs/local-developer-environment.md](/mnt/c/Users/kenne/Desktop/ReleasedGroup/2EndSquaredTesting/docs/local-developer-environment.md)
 
 ## Working Rule
 

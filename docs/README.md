@@ -16,6 +16,7 @@ This folder now contains the planning and specification documents for the new te
 - [Implementation Roadmap](./implementation-roadmap.md)
 - [Sprint Plan](./sprint-plan.md)
 - [Requirements Traceability Matrix](./requirements-traceability-matrix.md)
+- [Local Developer Environment](./local-developer-environment.md)
 
 ## Recommended Reading Order
 

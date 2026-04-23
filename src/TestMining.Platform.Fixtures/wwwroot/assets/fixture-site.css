@@ -1,0 +1,185 @@
+html,
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #f4f1e8;
+    color: #14211a;
+}
+
+a {
+    color: inherit;
+}
+
+body {
+    min-height: 100vh;
+}
+
+.page-shell {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+.masthead {
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    color: #fdf9ef;
+    background: linear-gradient(135deg, #0f3b30, #316a54 60%, #d6a84b 130%);
+    box-shadow: 0 25px 60px rgba(20, 33, 26, 0.18);
+}
+
+.eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.card,
+.panel,
+.dialog {
+    border-radius: 1.25rem;
+    background: #fffdf8;
+    box-shadow: 0 18px 40px rgba(20, 33, 26, 0.1);
+}
+
+.card {
+    padding: 1.25rem;
+}
+
+.card a {
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.panel {
+    padding: 1.25rem;
+}
+
+label,
+input,
+select,
+button,
+textarea {
+    font: inherit;
+}
+
+form {
+    display: grid;
+    gap: 0.85rem;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.8rem 0.9rem;
+    border-radius: 0.9rem;
+    border: 1px solid #c7d1c3;
+    background: #ffffff;
+}
+
+button {
+    border: 0;
+    padding: 0.85rem 1.2rem;
+    border-radius: 999px;
+    background: #194c3c;
+    color: #fdf9ef;
+    cursor: pointer;
+}
+
+button.secondary {
+    background: #d9e1d5;
+    color: #14211a;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e6ebde;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.toast-stack {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    display: grid;
+    gap: 0.75rem;
+    z-index: 100;
+}
+
+.toast {
+    min-width: 240px;
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+    color: #fdf9ef;
+    background: #194c3c;
+    box-shadow: 0 20px 45px rgba(20, 33, 26, 0.2);
+}
+
+.dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    background: rgba(20, 33, 26, 0.45);
+    padding: 1rem;
+}
+
+.dialog-backdrop.visible {
+    display: grid;
+}
+
+.dialog {
+    width: min(520px, 100%);
+    padding: 1.25rem;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    background: #edf4ea;
+}
+
+@media (max-width: 700px) {
+    .toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

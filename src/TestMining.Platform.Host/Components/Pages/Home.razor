@@ -1,0 +1,75 @@
+@page "/"
+@inject DeveloperEnvironmentStatusService StatusService
+
+<PageTitle>Local Developer Environment</PageTitle>
+
+<section class="page-header">
+    <p class="eyebrow">Issue #7 foundation</p>
+    <h1>Local developer environment</h1>
+    <p class="lede">
+        Use this shell to verify the local production-like stack before pushing workflow changes. It keeps the real
+        ASP.NET Core host and Blazor Server UI in the loop while checking PostgreSQL, artefact storage, and the fixture harness.
+    </p>
+</section>
+
+<div class="actions">
+    <button type="button" @onclick="RefreshAsync">Refresh diagnostics</button>
+    <span>@statusText</span>
+</div>
+
+@if (status is null)
+{
+    <p>Loading environment status...</p>
+}
+else
+{
+    <div class="status-grid">
+        <article class="@CardClass(status.ArtefactStorage)">
+            <h2>Artefact storage</h2>
+            <p>@status.ArtefactStorage.Summary</p>
+            <code>@status.ArtefactStoragePath</code>
+        </article>
+
+        <article class="@CardClass(status.Postgres)">
+            <h2>PostgreSQL</h2>
+            <p>@status.Postgres.Summary</p>
+            <p class="hint">Configured via <code>ConnectionStrings__PlatformPostgres</code>.</p>
+        </article>
+
+        <article class="@CardClass(status.Fixtures)">
+            <h2>Fixture harness</h2>
+            <p>@status.Fixtures.Summary</p>
+            <p class="hint">Default base URL: <code>http://localhost:5274</code></p>
+        </article>
+    </div>
+
+    <section class="workflow">
+        <h2>Local workflow</h2>
+        <ol>
+            <li>Start PostgreSQL from <code>deploy/local/docker-compose.platform-dev.yml</code>.</li>
+            <li>Run <code>TestMining.Platform.Fixtures</code> on port <code>5274</code>.</li>
+            <li>Run this host and confirm all diagnostics report ready.</li>
+        </ol>
+        <p class="hint">Last checked: @status.CheckedAt.ToLocalTime().ToString("u")</p>
+    </section>
+}
+
+@code
+{
+    private DeveloperEnvironmentStatus? status;
+    private string statusText = "Checking dependencies...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshAsync();
+    }
+
+    private async Task RefreshAsync()
+    {
+        statusText = "Refreshing diagnostics...";
+        status = await StatusService.GetStatusAsync(CancellationToken.None);
+        statusText = "Diagnostics updated.";
+    }
+
+    private static string CardClass(DependencyCheckResult check) => check.Ready ? "status-card ready" : "status-card waiting";
+}

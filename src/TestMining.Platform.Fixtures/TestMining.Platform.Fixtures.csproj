@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <AssemblyName>TestMining.Platform.Fixtures</AssemblyName>
+    <RootNamespace>TestMining.Platform.Fixtures</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Product>Test Mining Platform</Product>
+  </PropertyGroup>
+
+</Project>

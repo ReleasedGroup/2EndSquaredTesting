@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fixture Harness</title>
+    <link rel="stylesheet" href="/assets/fixture-site.css" />
+</head>
+<body data-page="home">
+    <div class="page-shell">
+        <section class="masthead">
+            <p class="eyebrow">Test Mining Platform Fixtures</p>
+            <div class="toolbar">
+                <div>
+                    <h1>Representative flows for recording and replay</h1>
+                    <p>
+                        Forms, editable grids, modal dialogs, login state, dynamic identifiers, and toast feedback live here.
+                    </p>
+                </div>
+                <div class="status-pill" id="shared-status">Checking session...</div>
+            </div>
+            <p id="customer-count">Loading seeded data...</p>
+        </section>
+
+        <section class="card-grid">
+            <article class="card">
+                <h2>Basic forms</h2>
+                <p>Create deterministic records and observe a success toast.</p>
+                <a href="/forms">Open form flow</a>
+            </article>
+            <article class="card">
+                <h2>Editable grid</h2>
+                <p>Edit and delete seeded records in place.</p>
+                <a href="/grid">Open grid flow</a>
+            </article>
+            <article class="card">
+                <h2>Modal dialog</h2>
+                <p>Exercise overlay interactions and audit-trail updates.</p>
+                <a href="/modal">Open modal flow</a>
+            </article>
+            <article class="card">
+                <h2>Login flow</h2>
+                <p>Use <strong>demo / demo</strong> to establish fixture session state.</p>
+                <a href="/login">Open login flow</a>
+            </article>
+        </section>
+    </div>
+    <div class="toast-stack" id="toast-stack"></div>
+    <script src="/assets/fixture-site.js"></script>
+</body>
+</html>

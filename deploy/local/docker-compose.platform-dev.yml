@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: testmining-platform-postgres
+    environment:
+      POSTGRES_DB: testmining_platform
+      POSTGRES_USER: testmining_platform
+      POSTGRES_PASSWORD: ${PLATFORM_POSTGRES_PASSWORD:?set PLATFORM_POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - platform-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testmining_platform -d testmining_platform"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  platform-postgres-data:

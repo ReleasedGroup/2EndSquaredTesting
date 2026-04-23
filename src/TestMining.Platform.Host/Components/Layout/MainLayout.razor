@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+
+<div class="shell">
+    <aside class="shell-nav">
+        <p class="eyebrow">Test Mining Platform</p>
+        <h1>Local Validation Shell</h1>
+        <p class="lede">
+            Production-like bootstrap for the real host, local PostgreSQL, artefact storage, and fixture app.
+        </p>
+
+        <nav>
+            <a href="/">Environment status</a>
+            <a href="http://localhost:5274" target="_blank" rel="noreferrer">Fixture app</a>
+            <a href="/api/developer-environment/status" target="_blank" rel="noreferrer">Status API</a>
+        </nav>
+    </aside>
+
+    <main class="shell-main">
+        @Body
+    </main>
+</div>

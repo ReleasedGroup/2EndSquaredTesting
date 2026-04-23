@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fixture Grid</title>
+    <link rel="stylesheet" href="/assets/fixture-site.css" />
+</head>
+<body data-page="grid">
+    <div class="page-shell">
+        <section class="masthead">
+            <p class="eyebrow">Fixture grid workflow</p>
+            <div class="toolbar">
+                <div>
+                    <h1>Editable grid with deterministic records</h1>
+                    <p>Record table interactions, inline edits, and destructive actions against resettable fixture data.</p>
+                </div>
+                <div class="status-pill" id="shared-status">Checking session...</div>
+            </div>
+        </section>
+
+        <section class="panel" style="margin-top: 1.5rem;">
+            <div class="toolbar">
+                <h2>Customer grid</h2>
+                <div>
+                    <button type="button" id="grid-refresh">Refresh</button>
+                    <button type="button" class="secondary" id="grid-reset">Reset fixture data</button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="grid-body"></tbody>
+            </table>
+        </section>
+    </div>
+    <div class="toast-stack" id="toast-stack"></div>
+    <script src="/assets/fixture-site.js"></script>
+</body>
+</html>

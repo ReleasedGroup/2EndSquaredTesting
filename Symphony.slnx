@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/TestMining.Platform.Fixtures/TestMining.Platform.Fixtures.csproj" />
+    <Project Path="src/TestMining.Platform.Host/TestMining.Platform.Host.csproj" />
     <Project Path="src/Symphony.Core/Symphony.Core.csproj" />
     <Project Path="src/Symphony.Host/Symphony.Host.csproj" />
     <Project Path="src/Symphony.Infrastructure.Agent.Codex/Symphony.Infrastructure.Agent.Codex.csproj" />
@@ -9,6 +11,8 @@
     <Project Path="src/Symphony.Infrastructure.Workspaces/Symphony.Infrastructure.Workspaces.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/TestMining.Platform.Fixtures.Tests/TestMining.Platform.Fixtures.Tests.csproj" />
+    <Project Path="tests/TestMining.Platform.Host.Tests/TestMining.Platform.Host.Tests.csproj" />
     <Project Path="tests/Symphony.Core.Tests/Symphony.Core.Tests.csproj" />
     <Project Path="tests/Symphony.Integration.Tests/Symphony.Integration.Tests.csproj" />
   </Folder>

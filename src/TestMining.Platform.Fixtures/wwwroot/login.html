@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fixture Login</title>
+    <link rel="stylesheet" href="/assets/fixture-site.css" />
+</head>
+<body data-page="login">
+    <div class="page-shell">
+        <section class="masthead">
+            <p class="eyebrow">Fixture login workflow</p>
+            <div class="toolbar">
+                <div>
+                    <h1>Cookie-backed login fixture</h1>
+                    <p>Use <strong>demo / demo</strong> to create a local session for recording and replay validation.</p>
+                </div>
+                <div class="status-pill" id="shared-status">Checking session...</div>
+            </div>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel">
+                <h2>Sign in</h2>
+                <form id="login-form">
+                    <div>
+                        <label for="username">Username</label>
+                        <input id="username" name="userName" autocomplete="off" required />
+                    </div>
+                    <div>
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" required />
+                    </div>
+                    <div class="toolbar">
+                        <button type="submit">Sign in</button>
+                        <button type="button" class="secondary" id="logout-button">Sign out</button>
+                    </div>
+                </form>
+            </article>
+
+            <article class="panel">
+                <h2>Session state</h2>
+                <p id="login-result">Checking session...</p>
+                <p>This fixture intentionally keeps the flow simple and deterministic for later Playwright coverage.</p>
+            </article>
+        </section>
+    </div>
+    <div class="toast-stack" id="toast-stack"></div>
+    <script src="/assets/fixture-site.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+html,
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #f5f7f3;
+    color: #1f2a1f;
+}
+
+a {
+    color: inherit;
+}
+
+.shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+}
+
+.shell-nav {
+    padding: 2rem;
+    background: linear-gradient(180deg, #19382f, #245742);
+    color: #f6f7ef;
+}
+
+.shell-nav nav {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.shell-nav a {
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.shell-main {
+    padding: 2rem;
+}
+
+.eyebrow {
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.lede {
+    max-width: 65ch;
+    line-height: 1.5;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+button {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.8rem 1.3rem;
+    background: #245742;
+    color: #f6f7ef;
+    cursor: pointer;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.status-card,
+.workflow {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(31, 42, 31, 0.08);
+}
+
+.status-card.ready {
+    border-left: 6px solid #2f8f54;
+}
+
+.status-card.waiting {
+    border-left: 6px solid #d07d31;
+}
+
+.hint,
+code {
+    color: #4a5d4d;
+}
+
+code {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    background: #eef2eb;
+}
+
+@media (max-width: 900px) {
+    .shell {
+        grid-template-columns: 1fr;
+    }
+}

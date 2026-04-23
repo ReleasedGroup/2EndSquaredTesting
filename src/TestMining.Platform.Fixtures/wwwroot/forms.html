@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fixture Forms</title>
+    <link rel="stylesheet" href="/assets/fixture-site.css" />
+</head>
+<body data-page="forms">
+    <div class="page-shell">
+        <section class="masthead">
+            <p class="eyebrow">Fixture form workflow</p>
+            <div class="toolbar">
+                <div>
+                    <h1>Basic form with dynamic identifiers</h1>
+                    <p>The field ids are assigned at runtime so later locator work cannot rely on static element ids.</p>
+                </div>
+                <div class="status-pill" id="shared-status">Checking session...</div>
+            </div>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel">
+                <h2>Create customer</h2>
+                <form id="customer-form">
+                    <div>
+                        <label data-for="name">Name</label>
+                        <input name="name" autocomplete="off" required />
+                    </div>
+                    <div>
+                        <label data-for="email">Email</label>
+                        <input name="email" type="email" autocomplete="off" required />
+                    </div>
+                    <div>
+                        <label data-for="role">Role</label>
+                        <select name="role">
+                            <option>Administrator</option>
+                            <option>Operator</option>
+                            <option>Reviewer</option>
+                        </select>
+                    </div>
+                    <div class="toolbar">
+                        <button type="submit">Save customer</button>
+                        <button type="button" class="secondary" id="forms-reset">Reset fixture data</button>
+                    </div>
+                </form>
+            </article>
+
+            <article class="panel">
+                <h2>Expected signals</h2>
+                <ul>
+                    <li>Field focus and fill interactions</li>
+                    <li>Select element interaction</li>
+                    <li>Submit button and toast notification</li>
+                    <li>Deterministic reset hook</li>
+                </ul>
+                <p id="form-result">Submit the form to create a deterministic record.</p>
+            </article>
+        </section>
+    </div>
+    <div class="toast-stack" id="toast-stack"></div>
+    <script src="/assets/fixture-site.js"></script>
+</body>
+</html>
