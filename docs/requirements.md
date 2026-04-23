@@ -1179,7 +1179,7 @@ The system shall allow masking rules by field name, selector metadata, or manual
 
 ### 12.4 Target URL Allow-List Enforcement
 
-The platform shall enforce an administrator-managed allow-list of target base URLs. A recording or replay session shall fail to start if its requested target URL does not match an entry on the allow-list for the selected environment. The allow-list check shall be performed server-side before any Playwright browser context is launched. The allow-list shall be auditable and changes shall be captured in the audit trail defined in Section 12.6.
+The platform shall enforce an administrator-managed allow-list of target base URLs. A recording or replay session shall fail to start if its requested target URL does not match an entry on the allow-list for the selected environment. The allow-list check shall be performed server-side before any Playwright browser context is launched. The allow-list shall be auditable and changes shall be captured in the audit trail defined in Section 12.7.
 
 ### 12.5 Encryption of Captured Session Material
 
