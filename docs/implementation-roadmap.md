@@ -24,6 +24,7 @@ Deliverables:
 - internal API versioning convention
 - SignalR infrastructure
 - artefact storage abstraction
+- local production-like developer environment bootstrap
 - fixture app test harness
 - baseline observability and audit primitives
 - ADRs for generator choice, authentication provider, replay execution boundary, and draft persistence shape
@@ -40,19 +41,23 @@ Prove the end-to-end path from recording to generated code to replay on a simple
 
 Suggested slices:
 
-1. Recording session creation plus allow-list validation
-2. Playwright browser launch and recorder injection
-3. Meaningful event capture for navigation, click, fill, select, and checkbox
-4. Incremental recording persistence
-5. Initial timeline UI with human-readable steps
-6. Locator candidate creation and ranking
-7. Draft scenario editing and immutable version creation
-8. Deterministic C# generator for one profile
-9. Basic replay execution and step-level result reporting
+1. Local production-like developer startup workflow with Blazor UI and PostgreSQL
+2. Application shell and navigation suitable for visual testing
+3. Recording session creation plus allow-list validation
+4. Playwright browser launch and recorder injection
+5. Meaningful event capture for navigation, click, fill, select, and checkbox
+6. Incremental recording persistence
+7. Initial timeline UI with human-readable steps
+8. Locator candidate creation and ranking
+9. Draft scenario editing and immutable version creation
+10. Deterministic C# generator for one profile
+11. Basic replay execution and step-level result reporting
 
 Phase 1 exit should match Section 18.5 Phase 1 exit criteria.
 
 Phase 1 is not complete unless URL allow-list enforcement and encryption of stored auth/session material are demonstrably working, because they are part of the stated exit criteria rather than optional hardening.
+
+Phase 1 is also not complete unless a developer can run the real UI locally against a production-like stack shape and visually test the core workflow before push.
 
 ## 5. Phase 2: Robustness
 

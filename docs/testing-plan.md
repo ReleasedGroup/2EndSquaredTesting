@@ -24,6 +24,7 @@ Derived from requirements:
 - flaky tests must be fixed or quarantined quickly
 - every acceptance criterion must trace to automated coverage
 - the PostgreSQL-backed path is the required v1 provider path in CI and local integration testing
+- developers need a local production-like environment for pre-push validation of the real application and UI
 
 ## 4. Repository Test Layout
 
@@ -199,6 +200,24 @@ Required Phase 1 path:
 5. generate C# output
 6. replay and inspect result
 
+### 6.4 Local Developer Validation Environment
+
+In addition to automated coverage, the repository should support a local production-like validation profile so a developer can test changes before pushing them.
+
+That local profile should include:
+
+- the real ASP.NET Core host
+- the real Blazor Server UI
+- PostgreSQL
+- artefact storage through the normal abstraction
+- representative fixture applications or seeded data
+
+Recommended usage:
+
+- run the full application locally
+- exercise the main UI workflows visually
+- use the local environment before pushing substantial workflow changes
+
 ## 7. Fixture Application Plan
 
 Based on Section 14.3, fixtures should cover:
@@ -286,6 +305,8 @@ Pull request CI should:
 6. run secret scanning and policy checks
 7. run PostgreSQL-backed integration tests using a containerized database, per Section 22.3
 
+The repository should also document the local startup path developers use to validate the same application shape before push.
+
 Suggested command groups:
 
 - `dotnet restore`
@@ -301,6 +322,7 @@ Suggested command groups:
 - generated output compiles
 - replay reports per-step pass/fail
 - allow-list and encryption rules tested
+- local production-like environment supports visual execution of the Phase 1 UI flow
 
 ### Phase 2
 

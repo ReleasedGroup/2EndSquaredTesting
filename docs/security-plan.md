@@ -51,6 +51,8 @@ Recommended v1 approach:
 - shared environments: external identity provider via ASP.NET Core authentication
 - production-like environments: enforced external identity provider and secure cookie/session configuration
 
+The local developer environment should still exercise the real application shell and the core security-sensitive code paths wherever practical. Local convenience mode should reduce friction, not create a separate unrepresentative application path.
+
 ### 5.2 Authorization
 
 Minimum role model:

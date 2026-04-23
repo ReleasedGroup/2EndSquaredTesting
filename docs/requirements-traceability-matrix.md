@@ -14,24 +14,25 @@ Use this document to keep future code changes, ADRs, test cases, and pull reques
 - [Security Plan](./security-plan.md)
 - [Testing Plan](./testing-plan.md)
 - [Implementation Roadmap](./implementation-roadmap.md)
+- [Sprint Plan](./sprint-plan.md)
 
 ## 3. Requirement Coverage Matrix
 
 | Requirement Area | Requirement Source | Primary Planning Docs |
 | --- | --- | --- |
 | Product intent and canonical scenario principle | Sections 1, 2, 7.1, 24 | Technical Specification, Implementation Roadmap |
-| Scope and phase boundaries | Sections 3, 18, 21 | Technical Specification, Implementation Roadmap |
+| Scope and phase boundaries | Sections 3, 18, 21 | Technical Specification, Implementation Roadmap, Sprint Plan |
 | Roles and primary use cases | Section 4 | UI/UX Plan, Technical Specification |
-| Logical architecture and lifecycles | Sections 5, 17 | Technical Specification, Implementation Roadmap |
+| Logical architecture and lifecycles | Sections 5, 17 | Technical Specification, Implementation Roadmap, Sprint Plan |
 | Technology stack and provider strategy | Section 6 | Technical Specification |
 | Domain entities and artefacts | Sections 7.2 through 7.5 | Technical Specification, Testing Plan |
-| Recording requirements | `FR-REC-001` through `FR-REC-010` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan, Implementation Roadmap |
-| Inference requirements | `FR-INF-001` through `FR-INF-009` | Technical Specification, UI/UX Plan, Testing Plan |
-| Scenario authoring requirements | `FR-AUTH-001` through `FR-AUTH-006` | Technical Specification, UI/UX Plan, Testing Plan |
-| Generation requirements | `FR-GEN-001` through `FR-GEN-010` | Technical Specification, UI/UX Plan, Testing Plan, Implementation Roadmap |
-| Replay requirements | `FR-REP-001` through `FR-REP-005` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan |
-| Healing requirements | `FR-HEAL-001` through `FR-HEAL-005` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan, Implementation Roadmap |
-| Administration requirements | `FR-ADM-001` through `FR-ADM-004` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan |
+| Recording requirements | `FR-REC-001` through `FR-REC-010` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan, Implementation Roadmap, Sprint Plan |
+| Inference requirements | `FR-INF-001` through `FR-INF-009` | Technical Specification, UI/UX Plan, Testing Plan, Sprint Plan |
+| Scenario authoring requirements | `FR-AUTH-001` through `FR-AUTH-006` | Technical Specification, UI/UX Plan, Testing Plan, Sprint Plan |
+| Generation requirements | `FR-GEN-001` through `FR-GEN-010` | Technical Specification, UI/UX Plan, Testing Plan, Implementation Roadmap, Sprint Plan |
+| Replay requirements | `FR-REP-001` through `FR-REP-005` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan, Sprint Plan |
+| Healing requirements | `FR-HEAL-001` through `FR-HEAL-005` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan, Implementation Roadmap, Sprint Plan |
+| Administration requirements | `FR-ADM-001` through `FR-ADM-004` | Technical Specification, UI/UX Plan, Security Plan, Testing Plan, Sprint Plan |
 | UI requirements | Section 9 | UI/UX Plan, Technical Specification |
 | API and real-time requirements | Section 10 | Technical Specification, UI/UX Plan |
 | Configuration requirements | Section 11 | Technical Specification, Security Plan |
@@ -40,7 +41,8 @@ Use this document to keep future code changes, ADRs, test cases, and pull reques
 | Verification and testing requirements | Section 14 | Testing Plan |
 | Non-functional requirements | Section 15 | Technical Specification, UI/UX Plan, Testing Plan |
 | Deployment and operational safety | Section 16 | Technical Specification, Security Plan, Implementation Roadmap |
-| Acceptance criteria | Section 19 | Testing Plan, Technical Specification, Implementation Roadmap |
+| Local production-like developer environment and visual workflow validation | Sections 9.1, 14.1, 16.2, 18.1, 19 | Technical Specification, UI/UX Plan, Testing Plan, Implementation Roadmap, Sprint Plan |
+| Acceptance criteria | Section 19 | Testing Plan, Technical Specification, Implementation Roadmap, Sprint Plan |
 | Risks and constraints | Section 20 | Technical Specification, Implementation Roadmap |
 | Build, test, and delivery requirements | Section 22 | Testing Plan, Technical Specification, Security Plan |
 | Implementer guardrails | Section 23 | Security Plan, Technical Specification, Implementation Roadmap |
@@ -61,6 +63,7 @@ Use this document to keep future code changes, ADRs, test cases, and pull reques
 | Generated output remains reproducible | `FR-GEN-001`, `FR-GEN-010` | Technical Specification generation design, Testing Plan snapshot strategy |
 | Allow-list blocks disallowed targets | Section 12.4 | Security Plan allow-list control, Testing Plan allow-list tests |
 | Observability supports performance verification | Sections 13.1, 15.2 | Technical Specification observability design, Testing Plan performance instrumentation |
+| Developers can validate the real UI locally before push | Sections 9.1, 14.1, 16.2, 19 | UI/UX Plan local visual testing expectations, Testing Plan local validation environment, Sprint Plan sprint exit criteria |
 
 ## 5. Future Use
 

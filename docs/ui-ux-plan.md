@@ -30,6 +30,7 @@ Practical interpretation:
 - keep every destructive or source-of-truth-changing action explicit
 - preserve continuity between recording, editing, generation, and replay
 - keep the scenario editor as the primary authoring surface; generated code preview is a downstream review surface, not the editing source of truth
+- deliver the UI early enough that developers can visually test the real workflows during implementation, not only after backend completion
 
 ## 3. User Roles and UX Focus
 
@@ -63,6 +64,8 @@ Recommended dashboard widgets:
 - recent replay failures
 - healing proposals awaiting approval
 - retention or configuration warnings
+
+This navigation shell should exist early in development so the product can be exercised visually in a local environment even while deeper capability slices are still being completed.
 
 ## 5. Information Architecture
 
@@ -285,7 +288,19 @@ Because recording, generation, replay, export, and cleanup are asynchronous, the
 - provide retry guidance when failures occur
 - avoid blocking the entire app shell for operation-specific failures
 
-## 8. Accessibility Plan
+## 8. Local Visual Testing Expectations
+
+Because the product is intended to be developed and validated through its actual UI, the local developer environment should support visual testing of:
+
+- sign-in and application shell navigation
+- recording session creation and recording status
+- timeline editing and scenario validation feedback
+- generation preview and warnings
+- replay execution, diagnostics, and healing review surfaces
+
+Local visual testing should use the same Blazor Server UI that will ship, not a separate mock frontend.
+
+## 9. Accessibility Plan
 
 Required to support Section 15.6:
 
@@ -296,7 +311,7 @@ Required to support Section 15.6:
 - non-color indicators for pass/warn/fail/confidence levels
 - focus management when drawers, dialogs, or review panels open
 
-## 9. Responsive Behaviour
+## 10. Responsive Behaviour
 
 The UI is desktop-first for v1, but should degrade gracefully.
 
@@ -308,7 +323,7 @@ Recommended breakpoints:
 
 Do not hide critical validation, approval, or security warnings on smaller layouts.
 
-## 10. Design System Guidance
+## 11. Design System Guidance
 
 Suggested component set:
 
@@ -329,7 +344,7 @@ Suggested state taxonomy:
 - blocking
 - sensitive
 
-## 11. Source-of-Truth UX Rules
+## 12. Source-of-Truth UX Rules
 
 To stay aligned with Sections 7.1 and 8.4:
 
@@ -338,7 +353,7 @@ To stay aligned with Sections 7.1 and 8.4:
 3. Replay and healing screens must always show which scenario version they are derived from.
 4. Any action that changes persisted scenario behaviour must route through scenario versioning, not ad hoc direct mutation.
 
-## 12. UX Acceptance Checks
+## 13. UX Acceptance Checks
 
 The following checks should be true before UI slices are considered complete:
 
@@ -347,3 +362,4 @@ The following checks should be true before UI slices are considered complete:
 3. Sensitive values never appear in clear text in preview surfaces.
 4. Long-running operations recover gracefully from refresh or reconnect.
 5. Role-restricted actions are hidden or disabled with clear rationale.
+6. A developer can run the local environment and visually exercise the primary UI workflows before pushing changes.

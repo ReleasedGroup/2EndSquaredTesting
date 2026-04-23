@@ -4,7 +4,7 @@ tracker:
   endpoint: https://api.github.com/graphql
   api_key: $GITHUB_TOKEN
   owner: releasedgroup
-  repo: nextmedia-manager-copilot
+  repo: 2EndSquaredTesting
   milestone: null
   include_pull_requests: true
   labels: []

@@ -32,6 +32,8 @@ This technical plan primarily supports:
 - generating readable C# Playwright output
 - replaying scenarios with diagnostics
 - producing deterministic healing suggestions under human approval
+- running the application locally in a production-like shape so end-to-end changes can be exercised before push or deployment
+- delivering a usable UI early enough that major workflows can be visually tested during implementation
 
 Relevant requirements:
 
@@ -97,6 +99,7 @@ Recommended defaults for v1:
 - Scriban templates for first-pass generation readability and snapshot testing
 - Roslyn reserved for later structural generation/refactoring needs
 - Filesystem artefact storage behind an abstraction so object storage can be added later
+- A documented local developer environment that mirrors the production-capable application topology closely enough for end-to-end validation
 
 Deferred by requirements and requiring ADRs before hardening:
 
@@ -391,6 +394,17 @@ Validation rules:
 - environment-level invalid configuration fails startup
 - runtime-editable invalid configuration fails save with actionable validation
 
+### 12.1 Local Production-Like Developer Profile
+
+The implementation should provide a documented local profile that mirrors the real application topology as closely as practical for development:
+
+- ASP.NET Core host and real Blazor Server UI
+- PostgreSQL as the active local persistence provider
+- local filesystem artefact storage through the same abstraction used elsewhere
+- fixture applications or seeded test data for recording, generation, and replay validation
+
+The local profile is for pre-push confidence, not for inventing a second architecture. Differences from shared or production-like environments should stay minimal and explicit.
+
 ## 13. Security-Critical Technical Controls
 
 This technical specification depends on the detailed controls in [docs/security-plan.md](./security-plan.md). At minimum:
@@ -452,10 +466,10 @@ The following remain deferred and should be resolved in ADRs before implementati
 
 To align with Phase 1 in Section 18:
 
-1. Host shell plus authenticated Blazor layout and PostgreSQL persistence bootstrap
+1. Host shell plus authenticated Blazor layout and PostgreSQL persistence bootstrap, available in a local production-like developer profile
 2. Recording session creation plus allow-list validation
 3. Recorder transport and incremental persistence for navigation/click/fill/select
-4. Timeline review UI with draft editing
+4. Timeline review UI with draft editing so the workflow can be visually tested early
 5. Locator ranking and scenario version creation
 6. Deterministic generation preview and export
 7. Basic replay with pass/fail diagnostics
@@ -469,3 +483,4 @@ Implementation should not start until these are agreed:
 - generator approach for Phase 1
 - fixture web applications for automated testing
 - authentication approach for non-local environments
+- local production-like startup workflow for developers, including how the UI and PostgreSQL are run together

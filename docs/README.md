@@ -14,6 +14,7 @@ This folder now contains the planning and specification documents for the new te
 - [Security Plan](./security-plan.md)
 - [Testing Plan](./testing-plan.md)
 - [Implementation Roadmap](./implementation-roadmap.md)
+- [Sprint Plan](./sprint-plan.md)
 - [Requirements Traceability Matrix](./requirements-traceability-matrix.md)
 
 ## Recommended Reading Order
@@ -24,7 +25,8 @@ This folder now contains the planning and specification documents for the new te
 4. `security-plan.md`
 5. `testing-plan.md`
 6. `implementation-roadmap.md`
-7. `requirements-traceability-matrix.md`
+7. `sprint-plan.md`
+8. `requirements-traceability-matrix.md`
 
 ## Usage Guidance
 
@@ -33,3 +35,4 @@ This folder now contains the planning and specification documents for the new te
 - Use the UI/UX, security, and testing plans as non-optional design constraints.
 - Use the traceability matrix to connect future code, tests, ADRs, and pull requests back to requirements.
 - Treat all planning documents as subordinate to `requirements.md`; if a planning document and the requirements differ, update the planning document.
+- Treat the local production-like developer environment and early UI delivery as non-optional delivery constraints, not optional polish.
