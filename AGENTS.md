@@ -61,7 +61,7 @@ These are hard stops. Do not weaken them without an explicit, documented decisio
 
 ## 5. Coding Standards
 
-- C# language version supported by the SDK pinned in `Directory.Build.props` / `dotnet-tools.json`. Do not bump the SDK without an explicit, reviewed change.
+- C# language version must remain compatible with the repository's configured .NET build settings. Do not change SDK expectations without an explicit, reviewed change.
 - Nullable reference types enabled.
 - Async all the way for I/O; cancellation tokens propagated through polling, subprocess, and HTTP.
 - Analyzer warnings treated as errors in core projects.
