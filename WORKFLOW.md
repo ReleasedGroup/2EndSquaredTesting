@@ -14,7 +14,7 @@ tracker:
   terminal_states:
     - Closed
 polling:
-  interval_ms: 600000
+  interval_ms: 300000
 agent:
   max_concurrent_agents: 5
   max_turns: 20
