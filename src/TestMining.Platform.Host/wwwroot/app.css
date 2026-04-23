@@ -1,0 +1,316 @@
+:root {
+    color-scheme: light;
+    --panel: rgba(255, 252, 248, 0.92);
+    --panel-strong: #fff9f2;
+    --surface: rgba(34, 44, 58, 0.9);
+    --ink: #1f2430;
+    --ink-soft: #525b69;
+    --accent: #b65a3c;
+    --accent-soft: #f5d8c9;
+    --line: rgba(40, 49, 63, 0.12);
+    --shadow: 0 24px 50px rgba(37, 34, 29, 0.12);
+    --radius: 24px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Georgia, "Times New Roman", serif;
+    background:
+        radial-gradient(circle at top left, rgba(182, 90, 60, 0.24), transparent 34%),
+        linear-gradient(160deg, #f7f3ec 0%, #efe7da 45%, #ece8e1 100%);
+    color: var(--ink);
+}
+
+body {
+    min-height: 100vh;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+.shell,
+.public-shell {
+    min-height: 100vh;
+}
+
+.shell {
+    display: grid;
+    grid-template-columns: 18rem minmax(0, 1fr);
+}
+
+.shell__sidebar {
+    padding: 2rem 1.5rem;
+    background: var(--surface);
+    color: #f4ecdf;
+}
+
+.brand-block {
+    padding: 1.2rem;
+    border: 1px solid rgba(244, 236, 223, 0.14);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.brand-block__eyebrow,
+.shell__eyebrow,
+.workspace__eyebrow {
+    margin: 0 0 0.45rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.brand-block__title {
+    display: inline-block;
+    margin-bottom: 0.65rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.brand-block__text,
+.workspace__summary,
+.signin-card__description,
+.signin-card__email,
+.workspace__action-note,
+.workspace__readonly,
+.dashboard-card__hint {
+    color: var(--ink-soft);
+    line-height: 1.5;
+}
+
+.shell__main {
+    padding: 1.6rem;
+}
+
+.shell__topbar,
+.public-shell__header,
+.workspace__hero,
+.workspace__panel,
+.signin__hero,
+.signin-card,
+.dashboard-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    box-shadow: var(--shadow);
+}
+
+.shell__topbar,
+.workspace__hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+}
+
+.shell__topbar {
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.shell__headline {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.shell__session,
+.workspace__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+}
+
+.shell__badge,
+.workspace__badge,
+.signin-card__role,
+.dashboard-card__access {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 999px;
+    padding: 0.4rem 0.8rem;
+    background: var(--accent-soft);
+    color: #6f2f1e;
+    font-size: 0.84rem;
+}
+
+.workspace__badge--muted {
+    background: rgba(31, 36, 48, 0.08);
+    color: var(--ink-soft);
+}
+
+.shell__identity {
+    font-weight: 700;
+}
+
+.shell__signout,
+.workspace__action,
+.signin-card button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.75rem 1.1rem;
+    background: var(--accent);
+    color: #fff7f3;
+    cursor: pointer;
+}
+
+.shell__content,
+.public-shell__content {
+    padding-bottom: 2rem;
+}
+
+.public-shell {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem;
+}
+
+.public-shell__header {
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.nav-menu {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.4rem;
+}
+
+.nav-menu__link {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(244, 236, 223, 0.14);
+    border-radius: 18px;
+    color: inherit;
+    background: transparent;
+}
+
+.nav-menu__link.active {
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.nav-menu__link small {
+    color: rgba(244, 236, 223, 0.75);
+}
+
+.workspace {
+    display: grid;
+    gap: 1.2rem;
+}
+
+.workspace--compact {
+    max-width: 48rem;
+}
+
+.workspace__hero,
+.workspace__panel,
+.signin__hero,
+.signin-card,
+.dashboard-card {
+    padding: 1.4rem;
+}
+
+.workspace__layout,
+.signin__grid,
+.dashboard-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.workspace__panel--accent {
+    background:
+        linear-gradient(145deg, rgba(245, 216, 201, 0.5), rgba(255, 255, 255, 0.92)),
+        var(--panel-strong);
+}
+
+.workspace__readonly {
+    padding: 0.9rem 1rem;
+    border-radius: 18px;
+    background: rgba(31, 36, 48, 0.06);
+}
+
+.workspace__list {
+    margin: 0;
+    padding-left: 1.15rem;
+    line-height: 1.65;
+}
+
+.workspace__link {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.signin {
+    display: grid;
+    gap: 1.2rem;
+}
+
+.signin-card h2,
+.workspace h1,
+.public-shell h1 {
+    margin: 0 0 0.4rem;
+}
+
+.signin-card__email {
+    margin-top: 0;
+    font-size: 0.92rem;
+}
+
+.dashboard-card {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.dashboard-card__title {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 18px;
+    background: #7c1f13;
+    color: #fff;
+    box-shadow: var(--shadow);
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 0.7rem;
+}
+
+@media (max-width: 960px) {
+    .shell {
+        grid-template-columns: 1fr;
+    }
+
+    .shell__sidebar {
+        padding-bottom: 1rem;
+    }
+
+    .shell__main {
+        padding-top: 0.5rem;
+    }
+}

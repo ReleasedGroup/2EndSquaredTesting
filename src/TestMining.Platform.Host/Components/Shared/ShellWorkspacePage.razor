@@ -1,0 +1,68 @@
+<section class="workspace">
+    <div class="workspace__hero">
+        <div>
+            <p class="workspace__eyebrow">@Item.NavHint</p>
+            <h1>@Item.Title</h1>
+            <p class="workspace__summary">@Item.Summary</p>
+        </div>
+        <div class="workspace__meta">
+            <span class="workspace__badge">Role: @_roleLabel</span>
+            @if (Item.AllowsActionsFor(_currentUser))
+            {
+                <span class="workspace__badge">@Item.ActionHint</span>
+            }
+            else
+            {
+                <span class="workspace__badge workspace__badge--muted">@Item.ReadOnlyHint</span>
+            }
+        </div>
+    </div>
+
+    <div class="workspace__layout">
+        <article class="workspace__panel workspace__panel--accent">
+            <h2>Current slice</h2>
+            <p>@Item.Overview</p>
+            @if (Item.AllowsActionsFor(_currentUser))
+            {
+                <button class="workspace__action" type="button">@Item.PrimaryActionLabel</button>
+                <p class="workspace__action-note">@Item.ActionNote</p>
+            }
+            else
+            {
+                <div class="workspace__readonly">
+                    <strong>Read-only view.</strong> @Item.ReadOnlyExplanation
+                </div>
+            }
+        </article>
+
+        <article class="workspace__panel">
+            <h2>Visible now</h2>
+            <ul class="workspace__list">
+                @foreach (var detail in Item.VisibleNow)
+                {
+                    <li>@detail</li>
+                }
+            </ul>
+        </article>
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    [Inject]
+    private ShellNavigationService NavigationService { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public ShellNavigationItem Item { get; set; } = default!;
+
+    private ClaimsPrincipal _currentUser = new(new ClaimsIdentity());
+    private string _roleLabel = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _currentUser = (await AuthenticationStateTask).User;
+        _roleLabel = NavigationService.GetPrimaryRoleLabel(_currentUser);
+    }
+}

@@ -1,0 +1,4 @@
+@page "/administration"
+@attribute [Authorize(Roles = AppRoles.Administrator)]
+
+<ShellWorkspacePage Item="@ShellNavigationCatalog.Administration" />

@@ -1,0 +1,67 @@
+@page "/sign-in"
+@attribute [AllowAnonymous]
+
+@if (_isAuthenticated)
+{
+    <section class="workspace workspace--compact">
+        <p class="workspace__eyebrow">Authentication</p>
+        <h1>Already signed in</h1>
+        <p class="workspace__summary">
+            Continue into the shell or sign out to inspect a different role.
+        </p>
+        <div class="workspace__panel">
+            <a class="workspace__link" href="@RedirectTarget.ForReturnUrl(ReturnUrl)">Continue</a>
+        </div>
+    </section>
+}
+else
+{
+    <section class="signin">
+        <div class="signin__hero">
+            <p class="workspace__eyebrow">Local authentication</p>
+            <h1>@(InlinePrompt ? "Choose a local role to continue" : "Choose a local role")</h1>
+            <p class="workspace__summary">
+                This shell intentionally uses a local-development sign-in path so the UI and role affordances can be exercised before the production auth provider is finalized.
+            </p>
+        </div>
+
+        <div class="signin__grid">
+            @foreach (var user in _users)
+            {
+                <form class="signin-card" method="post" action="/auth/local-sign-in">
+                    <input type="hidden" name="userId" value="@user.Id" />
+                    <input type="hidden" name="returnUrl" value="@RedirectTarget.ForReturnUrl(ReturnUrl)" />
+                    <span class="signin-card__role">@user.Role</span>
+                    <h2>@user.DisplayName</h2>
+                    <p class="signin-card__email">@user.Email</p>
+                    <p class="signin-card__description">@user.Description</p>
+                    <button type="submit">Sign in as @user.Role</button>
+                </form>
+            }
+        </div>
+    </section>
+}
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    [Inject]
+    private LocalDevelopmentUserDirectory UserDirectory { get; set; } = default!;
+
+    [Parameter]
+    public bool InlinePrompt { get; set; }
+
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public string? ReturnUrl { get; set; }
+
+    private IReadOnlyList<LocalDevelopmentUserDefinition> _users = [];
+    private bool _isAuthenticated;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _users = UserDirectory.GetUsers();
+        _isAuthenticated = (await AuthenticationStateTask).User.Identity?.IsAuthenticated == true;
+    }
+}

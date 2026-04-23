@@ -1,0 +1,76 @@
+@inherits LayoutComponentBase
+
+@if (_currentUser.Identity?.IsAuthenticated == true)
+{
+    <div class="shell">
+        <aside class="shell__sidebar">
+            <div class="brand-block">
+                <p class="brand-block__eyebrow">Test Mining Platform</p>
+                <a class="brand-block__title" href="/dashboard">Sprint 1 host shell</a>
+                <p class="brand-block__text">
+                    Local developer profile with role-aware navigation for visual workflow validation.
+                </p>
+            </div>
+            <NavMenu />
+        </aside>
+
+        <div class="shell__main">
+            <header class="shell__topbar">
+                <div>
+                    <p class="shell__eyebrow">Authenticated shell</p>
+                    <p class="shell__headline">Role-aware access for Administrator, Author, and Viewer</p>
+                </div>
+                <div class="shell__session">
+                    <span class="shell__badge">@_primaryRole</span>
+                    <span class="shell__identity">@_currentUser.Identity.Name</span>
+                    <form method="post" action="/auth/sign-out">
+                        <input type="hidden" name="returnUrl" value="/sign-in" />
+                        <button class="shell__signout" type="submit">Sign out</button>
+                    </form>
+                </div>
+            </header>
+
+            <main class="shell__content">
+                @Body
+            </main>
+        </div>
+    </div>
+}
+else
+{
+    <div class="public-shell">
+        <header class="public-shell__header">
+            <p class="shell__eyebrow">Local developer profile</p>
+            <h1>Test Mining Platform host shell</h1>
+            <p>
+                Use one of the local development personas to inspect the Blazor shell and verify role-aware workflow affordances.
+            </p>
+        </header>
+        <main class="public-shell__content">
+            @Body
+        </main>
+    </div>
+}
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">x</span>
+</div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    [Inject]
+    private ShellNavigationService NavigationService { get; set; } = default!;
+
+    private ClaimsPrincipal _currentUser = new(new ClaimsIdentity());
+    private string _primaryRole = "Unauthenticated";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _currentUser = (await AuthenticationStateTask).User;
+        _primaryRole = NavigationService.GetPrimaryRoleLabel(_currentUser);
+    }
+}

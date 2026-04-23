@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TestMining.Platform.Host/TestMining.Platform.Host.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TestMining.Platform.Host.Tests/TestMining.Platform.Host.Tests.csproj" />
+  </Folder>
+</Solution>

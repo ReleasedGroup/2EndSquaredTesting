@@ -1,0 +1,51 @@
+@page "/"
+@page "/dashboard"
+@attribute [Authorize(Roles = AppRoles.ReviewCsv)]
+
+<section class="workspace">
+    <div class="workspace__hero">
+        <div>
+            <p class="workspace__eyebrow">Application shell</p>
+            <h1>Role-aware host shell</h1>
+            <p class="workspace__summary">
+                This baseline Blazor Server shell lets developers validate top-level workflows locally before deeper recording, scenario, replay, and administration features land.
+            </p>
+        </div>
+        <div class="workspace__meta">
+            <span class="workspace__badge">Role: @_roleLabel</span>
+            <span class="workspace__badge workspace__badge--muted">Authentication: local development cookie</span>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        @foreach (var item in _items)
+        {
+            <a class="dashboard-card" href="@item.Route">
+                <span class="dashboard-card__title">@item.Title</span>
+                <span class="dashboard-card__hint">@item.Summary</span>
+                <span class="dashboard-card__access">
+                    @(item.AllowsActionsFor(_currentUser) ? item.ActionHint : item.ReadOnlyHint)
+                </span>
+            </a>
+        }
+    </div>
+</section>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    [Inject]
+    private ShellNavigationService NavigationService { get; set; } = default!;
+
+    private ClaimsPrincipal _currentUser = new(new ClaimsIdentity());
+    private IReadOnlyList<ShellNavigationItem> _items = [];
+    private string _roleLabel = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _currentUser = (await AuthenticationStateTask).User;
+        _items = NavigationService.GetVisibleItems(_currentUser);
+        _roleLabel = NavigationService.GetPrimaryRoleLabel(_currentUser);
+    }
+}

@@ -1,0 +1,25 @@
+<nav class="nav-menu" aria-label="Primary">
+    @foreach (var item in _items)
+    {
+        <NavLink class="nav-menu__link" href="@item.Route" Match="NavLinkMatch.Prefix">
+            <span>@item.Title</span>
+            <small>@item.NavHint</small>
+        </NavLink>
+    }
+</nav>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    [Inject]
+    private ShellNavigationService NavigationService { get; set; } = default!;
+
+    private IReadOnlyList<ShellNavigationItem> _items = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await AuthenticationStateTask).User;
+        _items = NavigationService.GetVisibleItems(user);
+    }
+}

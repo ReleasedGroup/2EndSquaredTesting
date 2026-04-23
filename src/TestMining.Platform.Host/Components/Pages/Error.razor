@@ -1,0 +1,32 @@
+@page "/error"
+@using System.Diagnostics
+
+<PageTitle>Error</PageTitle>
+
+<section class="workspace workspace--compact">
+    <p class="workspace__eyebrow">Host health</p>
+    <h1>Unexpected host error</h1>
+    <p class="workspace__summary">
+        The shell hit an unexpected failure. Use the request identifier and local logs to investigate without exposing sensitive values in the UI.
+    </p>
+
+    @if (ShowRequestId)
+    {
+        <div class="workspace__panel">
+            <p><strong>Request ID:</strong> <code>@RequestId</code></p>
+        </div>
+    }
+</section>
+
+@code{
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? RequestId { get; set; }
+    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    protected override void OnInitialized()
+    {
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+    }
+}

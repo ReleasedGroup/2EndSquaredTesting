@@ -1,0 +1,24 @@
+@page "/access-denied"
+
+<section class="workspace workspace--compact">
+    <p class="workspace__eyebrow">Access control</p>
+    <h1>Access denied</h1>
+    <p class="workspace__summary">
+        This role does not have the permissions needed for that workspace. Workflow actions stay hidden or blocked until a higher-privilege role signs in.
+    </p>
+
+    <div class="workspace__panel">
+        <p>
+            Viewer access remains read-only. Authoring and administration actions are only exposed to roles that can complete them.
+        </p>
+        @if (!InlinePrompt)
+        {
+            <a class="workspace__link" href="/dashboard">Return to the dashboard</a>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter]
+    public bool InlinePrompt { get; set; }
+}

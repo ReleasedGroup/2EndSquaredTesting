@@ -1,0 +1,24 @@
+<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+            <NotAuthorized>
+                <AuthorizeView Context="authState">
+                    <Authorized>
+                        <AccessDenied InlinePrompt="true" />
+                    </Authorized>
+                    <NotAuthorized>
+                        <SignIn
+                            InlinePrompt="true"
+                            ReturnUrl="@(new Uri(Navigation.Uri).PathAndQuery)" />
+                    </NotAuthorized>
+                </AuthorizeView>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>
+
+@code {
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+}
