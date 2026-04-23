@@ -249,14 +249,16 @@ The implementation shall use:
 - PostgreSQL or SQL Server as the durable database
 - Roslyn and/or Scriban for code generation
 
-### 6.2 Database Provider Portability
+### 6.2 Database Provider Strategy
 
-The application shall support PostgreSQL and SQL Server as first-class database providers. To make this feasible:
+To make v1 deliverable without doubling persistence cost, the platform shall adopt the following strategy:
 
+- PostgreSQL shall be the **primary and only required provider for v1**. Local development, shared non-production, and production-like deployments shall all use PostgreSQL unless explicitly reconfigured.
+- SQL Server shall be a **deferred-but-supported secondary provider**. The persistence layer shall be designed so that SQL Server can be added later without redesigning the domain or repositories, but v1 acceptance does not require a working SQL Server deployment.
 - The persistence layer shall use EF Core abstractions and migrations.
-- Provider-specific SQL shall be avoided unless isolated behind clearly bounded infrastructure components.
-- Data types, indexing strategies, JSON storage, and concurrency rules shall be designed to work on both supported providers.
-- One provider may be chosen as the default local-development profile, but the schema and data-access patterns must remain portable.
+- Provider-specific SQL shall be avoided unless isolated behind clearly bounded infrastructure components and gated by a provider capability check.
+- Data types, indexing strategies, JSON storage, and concurrency rules shall be designed to remain portable to SQL Server. Use of PostgreSQL-only features (for example `jsonb` operators, array columns, partial indexes) is permitted in v1 provided the feature can be substituted or approximated on SQL Server later.
+- Integration tests shall run against real PostgreSQL (for example Testcontainers) rather than an in-memory provider, because in-memory providers do not exercise migration or JSON behaviour.
 
 ### 6.3 Browser Support
 
@@ -271,6 +273,18 @@ The canonical persisted business artefact shall be `Scenario`. Generated tests, 
 ### 7.2 Core Entities
 
 The persistence model shall include, at minimum, these entities.
+
+#### 7.2.0 Common Entity Requirements
+
+Unless explicitly exempted, every persistent entity defined in this section shall carry:
+
+- A stable primary key (`Id`) that is globally unique (GUID/UUID) and assigned by the application, not the database.
+- Audit fields: `CreatedAtUtc`, `CreatedByUserId`, `UpdatedAtUtc`, `UpdatedByUserId` (the last two may be nullable where the entity is immutable by design, such as `ScenarioVersion` and `RecordedStep`).
+- A `RowVersion` (optimistic concurrency token) column on entities that are editable by more than one workflow, including `Scenario`, `RecordingSession`, `HealingSuggestion`, and administrative configuration entities.
+- A soft-delete marker (`IsDeleted`, `DeletedAtUtc`, `DeletedByUserId`) on `Scenario`, `RecordingSession`, `GenerationArtifact`, and artefact records. Immutable versions (e.g. `ScenarioVersion`, `RecordedStep`) shall not support soft delete; deletion of a scenario shall be a cascade-tombstoning operation documented in the data model.
+- Timestamps stored in UTC; the domain shall not depend on database-local clocks for ordering decisions beyond audit.
+
+Field lists in the subsections below name the entity-specific fields and may omit the common fields above for brevity.
 
 #### 7.2.1 RecordingSession
 
@@ -470,7 +484,23 @@ Required fields:
 - `AppliedAtUtc`
 - `AppliedByUserId`
 
-#### 7.2.10 GenerationArtifact
+#### 7.2.10 UserAccount
+
+Represents an authenticated principal of the platform. Identity data may be federated from an external provider, but the platform shall maintain a local record to support authorship attribution, audit trails, and role assignment.
+
+Required fields:
+
+- `Id`
+- `ExternalSubjectId` (nullable; populated when federated)
+- `DisplayName`
+- `Email`
+- `Role` (at minimum one of: `Administrator`, `Author`, `Viewer`)
+- `IsDisabled`
+- `LastLoginAtUtc`
+
+All audit references in other entities (for example `StartedByUserId`, `CreatedByUserId`, `TriggeredByUserId`) shall resolve to `UserAccount.Id`.
+
+#### 7.2.11 GenerationArtifact
 
 Represents a generated bundle or file set.
 
@@ -534,6 +564,16 @@ Each artefact shall have:
 - Storage path or provider-specific handle
 - Created timestamp
 - Optional checksum
+- A size-in-bytes record
+
+The platform shall enforce default retention and size ceilings so artefact storage does not grow unbounded in the absence of administrative action:
+
+- Screenshots and DOM snapshots: retained for at least 30 days after the owning session or replay run completes; individual artefact size cap of 10 MB unless an administrator raises it.
+- Playwright traces: retained for at least 14 days; individual trace cap of 200 MB.
+- Session logs and replay diagnostic bundles: retained for at least 30 days.
+- Generated source bundles: retained until the owning scenario is deleted.
+
+Administrators may extend any retention window or raise any size cap through the configuration surface defined in Section 11. A background cleanup process shall delete artefacts that have exceeded their retention window and record the deletion in the audit trail.
 
 ## 7.5 State Model Expectations
 
@@ -937,7 +977,15 @@ Every healing proposal shall include evidence showing:
 
 #### FR-HEAL-003 Human Approval
 
-Healing changes that alter the persisted scenario shall require explicit approval unless an administrator enables a controlled auto-apply policy for deterministic high-confidence matches.
+In v1, every healing change that alters the persisted scenario shall require explicit human approval. Automatic application of healing proposals to persisted scenarios shall not ship in v1.
+
+A controlled auto-apply policy for deterministic high-confidence matches may be introduced in a later phase, subject to all of the following:
+
+- The feature shall be disabled by default.
+- Auto-apply shall be gated behind an administrator-only setting scoped per environment (never globally by default).
+- Auto-apply shall be restricted to `SuggestionType` values classified as locator-only, deterministic, and non-destructive. Changes to assertion semantics, step ordering, variable classification, or sensitive-data policy shall never be auto-applied.
+- A dry-run mode shall be available that records what would have been applied without mutating the scenario.
+- Every auto-applied change shall still create a new immutable `ScenarioVersion` with a traceable `HealingSuggestion` link.
 
 #### FR-HEAL-004 AI as Adviser
 
@@ -1129,11 +1177,24 @@ The system shall allow masking rules by field name, selector metadata, or manual
 - Stored event payloads
 - Generation previews
 
-### 12.4 Browser Session Isolation
+### 12.4 Target URL Allow-List Enforcement
+
+The platform shall enforce an administrator-managed allow-list of target base URLs. A recording or replay session shall fail to start if its requested target URL does not match an entry on the allow-list for the selected environment. The allow-list check shall be performed server-side before any Playwright browser context is launched. The allow-list shall be auditable and changes shall be captured in the audit trail defined in Section 12.6.
+
+### 12.5 Encryption of Captured Session Material
+
+The platform captures material that is sensitive by construction: authentication cookies, Playwright storage states, raw event payloads containing user input, and user-authored scenario variables marked sensitive. The following protections shall apply:
+
+- Playwright storage states, cookies, and any cached authentication material shall be encrypted at rest using platform-managed keys sourced from a secure secret provider.
+- Scenario variables classified as `Sensitive` shall be encrypted at rest. Their plaintext shall never be written to generated source, generation previews, logs, or UI previews.
+- Raw event payloads shall have sensitive fields masked or encrypted at rest according to the `MaskedFieldPolicyJson` in force at recording time. A field whose classification is changed to sensitive after recording shall be retroactively masked in subsequent previews and re-generation.
+- Key material shall not be checked into source control. Key rotation shall be supported at least by re-encrypting affected records during a controlled administrative operation.
+
+### 12.6 Browser Session Isolation
 
 Each recording or replay session shall execute in an isolated Playwright browser context unless explicitly configured otherwise by an administrator.
 
-### 12.5 Audit Logging
+### 12.7 Audit Logging
 
 The system shall maintain an audit trail for:
 
@@ -1218,11 +1279,14 @@ The platform shall favour deterministic execution. Generated tests and replay fl
 
 ### 15.2 Performance
 
-The system shall feel responsive for interactive authoring. Initial targets:
+The system shall feel responsive for interactive authoring. Initial targets, measured on a reference developer workstation (quad-core modern CPU, SSD, local PostgreSQL), expressed as percentiles over a rolling sample of at least 20 operations of the same type:
 
-- Start a recording session within 10 seconds under normal local conditions
-- Render timeline updates to the UI within 2 seconds of capture under normal load
-- Generate code for a typical scenario of up to 100 meaningful steps within 15 seconds
+- Time from "Start recording" click to Playwright page navigation ready: p50 ≤ 5 s, p95 ≤ 10 s.
+- End-to-end latency from a captured browser event to its corresponding step appearing in the timeline: p50 ≤ 750 ms, p95 ≤ 2 s.
+- Code generation for a scenario of up to 100 meaningful steps: p50 ≤ 8 s, p95 ≤ 15 s.
+- Replay start-up overhead (time from replay trigger to first step execution) shall not exceed 10 s at p95.
+
+These are product-quality targets, not contractual SLAs. Observability required under Section 13 shall be sufficient to verify them post-deployment.
 
 ### 15.3 Scalability
 
@@ -1342,20 +1406,47 @@ Phase 4 may add:
 - Healing proposal assistance
 - Page object refactoring suggestions
 
+### 18.5 Phase Exit Criteria
+
+A phase shall not be declared complete until the criteria below are demonstrably met. These are conformance gates, not aspirational targets.
+
+Phase 1 exit:
+- A user can authenticate, record a simple CRUD workflow end-to-end against a fixture web application, and see the persisted scenario.
+- Locator candidates are ranked and persisted for every targetable step.
+- Generated C# Playwright output compiles against the emitted helper library.
+- Replay executes the generated scenario against the same fixture and reports pass/fail per step.
+- URL allow-list enforcement (Section 12.4) and encryption of storage state (Section 12.5) are enforced.
+
+Phase 2 exit:
+- Assertion inference produces at least one outcome-oriented assertion suggestion for every save/submit/navigate step in the Phase 1 fixture library.
+- Variable classification is editable in the UI and round-trips through regeneration without loss.
+- Replay diagnostics bundles include screenshots at each failure, locator resolution attempts, and a failure category.
+
+Phase 3 exit:
+- Login bootstrap options (Section FR-ADM-002) are demonstrable end-to-end.
+- Healing review workflow can approve a deterministic locator healing proposal and create a new immutable scenario version referencing the originating replay run.
+- Artefact retention cleanup (Section 7.4) runs on schedule and is observable.
+
+Phase 4 exit (if undertaken):
+- Any AI-assisted suggestion is always advisory, never auto-applied, and is labelled as AI-sourced in the UI and audit trail.
+- Deterministic diagnostics continue to run and are presented alongside any AI suggestion.
+
 ## 19. Acceptance Criteria
 
-The implementation shall be considered to satisfy this specification only when all of the following are demonstrably true:
+The implementation shall be considered to satisfy this specification only when all of the following are demonstrably true and covered by at least one automated test traceable to the cited requirement identifiers.
 
-1. A user can record a real browser workflow through the UI and the system persists a structured scenario.
-2. The scenario can be reviewed, edited, and approved without direct database manipulation.
-3. The system generates readable C# Playwright artefacts from the approved scenario.
-4. The generated or scenario-derived replay executes through Playwright and produces useful diagnostics.
-5. Locator candidates are ranked and persisted rather than reduced to a single opaque selector.
-6. Sensitive values can be masked and remain masked across previews and logs.
-7. Assertions are outcome-oriented and can be approved or rejected before generation.
-8. A locator drift failure can produce a deterministic healing proposal with evidence.
-9. The application runs on ASP.NET Core with a Blazor Server frontend and a PostgreSQL or SQL Server-backed persistence layer.
-10. Generated output remains reproducible from scenario data and generation settings.
+1. A user can record a real browser workflow through the UI and the system persists a structured scenario. [FR-REC-001, FR-REC-004, FR-REC-010]
+2. The scenario can be reviewed, edited, and approved without direct database manipulation. [FR-AUTH-001 through FR-AUTH-006]
+3. The system generates readable C# Playwright artefacts from the approved scenario. [FR-GEN-001 through FR-GEN-010]
+4. The generated or scenario-derived replay executes through Playwright and produces useful diagnostics. [FR-REP-001, FR-REP-002, FR-REP-003]
+5. Locator candidates are ranked and persisted rather than reduced to a single opaque selector. [FR-INF-004, FR-INF-005]
+6. Sensitive values can be masked and remain masked across previews and logs, and are encrypted at rest where stored. [FR-REC-007, 12.3, 12.5]
+7. Assertions are outcome-oriented and can be approved or rejected before generation. [FR-INF-007, FR-AUTH-003]
+8. A locator drift failure can produce a deterministic healing proposal with evidence and require human approval before altering a scenario in v1. [FR-HEAL-001 through FR-HEAL-005]
+9. The application runs on ASP.NET Core with a Blazor Server frontend and a PostgreSQL-backed persistence layer, with SQL Server pluggability preserved as a deferred option. [6.1, 6.2]
+10. Generated output remains reproducible bit-for-bit (modulo timestamps declared as non-deterministic) from scenario data plus generation profile plus template version. [FR-GEN-001, FR-GEN-010]
+11. Recording and replay refuse to start against target URLs not present on the administrator-managed allow-list. [12.4]
+12. Observability emits the identifiers listed in 13.1 and permits verification of the performance targets in 15.2.
 
 ## 20. Risks and Constraints
 
@@ -1390,6 +1481,70 @@ The following decisions remain implementation-level choices unless later locked 
 - Which authentication provider is used for the host application
 - Which database provider is used as the primary development default
 
-## 22. Final Requirement Statement
+## 22. Build, Test, and Delivery Requirements
+
+### 22.1 Repository Boundaries
+
+The test mining platform shall be introduced into this repository as a new vertical slice using the `TestMining.Platform.*` naming convention described in Section 17. Existing Symphony projects (`src/Symphony.*`, `tests/Symphony.*`, `symphony_docs/`, and `SPEC.md`) are retained tooling assets and shall not be mutated by work targeting this specification unless a task explicitly requires it.
+
+### 22.2 Build System
+
+- The solution shall build with the .NET SDK pinned by the repository's existing tooling manifests (`Directory.Build.props`, `dotnet-tools.json`). Any SDK upgrade shall be an explicit, documented change.
+- `dotnet restore`, `dotnet build`, and `dotnet test` shall succeed from a clean checkout with no unresolved warnings treated as errors in core projects.
+- Projects shall enable nullable reference types and treat analyzer warnings as errors where practical.
+
+### 22.3 Continuous Integration
+
+The repository shall include a CI pipeline (GitHub Actions is the expected host) that, on every pull request touching the platform:
+
+1. Restores and builds the full solution.
+2. Runs unit and integration tests, including PostgreSQL-backed integration tests using a containerised database.
+3. Runs generator snapshot tests (Section 14.4).
+4. Publishes test results and code coverage summaries.
+5. Fails the pipeline if any new secret-looking string appears in diffs or if retention/policy violations are detected by linting rules once established.
+
+### 22.4 Recorder Script Delivery
+
+The browser-side recorder script is a first-class build artefact:
+
+- It shall live in source control under a clearly named project directory and shall be built deterministically as part of the platform build.
+- Its version shall be pinned and surfaced in captured recordings as `RecorderVersion` metadata so replay and healing can detect incompatible captures.
+- It shall be injected via Playwright-supported initialisation hooks. Runtime fetching of the recorder from an external origin is prohibited.
+
+### 22.5 Test Layering and Flake Budget
+
+- Unit tests shall be the default: deterministic, no network, no browser.
+- Integration tests shall exercise real infrastructure (PostgreSQL, Playwright against fixture web applications shipped with the repo).
+- End-to-end tests shall be kept small in number and tagged so they can be excluded from fast developer loops.
+- Any test that becomes flaky shall be either fixed or quarantined within one working day; persistent quarantine is not acceptable.
+
+## 23. Implementer Guardrails
+
+These guardrails exist to prevent the most likely failure modes of agentic or human implementers working on this specification.
+
+### 23.1 Prohibited Actions
+
+1. Writing captured credentials, cookies, storage states, tokens, or any value classified as `Sensitive` to logs, screenshots metadata, generation previews, or generated code.
+2. Launching a Playwright browser context against a target URL that does not match the configured allow-list.
+3. Introducing provider-specific SQL or raw ADO.NET calls into domain or application layers. Provider-specific code shall live in clearly isolated infrastructure components.
+4. Editing generated source files by hand and checking the result in. Generated output shall be reproduced from scenario data and templates only.
+5. Promoting an AI-assisted suggestion to a runtime-critical path. AI may advise; deterministic logic decides.
+6. Deleting or restructuring Symphony-related files while working on test mining platform tasks.
+7. Silently relaxing any non-functional requirement in Section 15, security requirement in Section 12, or acceptance criterion in Section 19.
+
+### 23.2 Required Behaviours
+
+1. Cite the requirement identifier (e.g. `FR-REC-004`, `FR-HEAL-003`) that motivates a code change in the pull request description.
+2. For any behaviour change, update or add a conformance test traceable to the cited requirement.
+3. Use feature-flagged rollout for anything that touches healing auto-apply, AI assistance, or cross-environment configuration.
+4. When a requirement is ambiguous, raise a clarification rather than guessing. Record the resolution in this document or in an architecture decision record.
+
+### 23.3 Pull Request Discipline
+
+1. Pull requests shall be scoped to a single vertical slice. Drive-by refactors, especially across the Symphony/test-mining boundary, shall be split into separate changes.
+2. Every PR shall identify new or changed artefact retention characteristics, new captured data fields, or new outbound network calls.
+3. Secret-scanning and dependency vulnerability checks shall run before merge.
+
+## 24. Final Requirement Statement
 
 This repository’s new application shall be a C#-based semantic test mining platform built on ASP.NET Core, Blazor Server, Microsoft.Playwright for .NET, and PostgreSQL or SQL Server. It shall record browser interactions, infer structured scenarios, rank resilient locators, generate maintainable Playwright C# tests, replay them with strong diagnostics, and support deterministic healing while keeping structured scenarios as the enduring source of truth.
