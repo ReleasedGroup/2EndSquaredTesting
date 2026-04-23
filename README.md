@@ -4,6 +4,8 @@ This repository is being used to build a C#-based semantic test mining platform 
 
 The current source of truth for the planned product is [docs/requirements.md](/mnt/c/Users/kenne/Desktop/ReleasedGroup/2EndSquaredTesting/docs/requirements.md). The concept document that informed it is [docs/concept.md](/mnt/c/Users/kenne/Desktop/ReleasedGroup/2EndSquaredTesting/docs/concept.md).
 
+In addition to being production-capable, the application is expected to support a local, production-like developer environment so changes can be exercised safely before they are pushed. The Blazor Server UI is also expected to be built early enough that major workflows can be visually tested during development rather than only through backend or CLI flows.
+
 ## Product Summary
 
 The application described in this repository is not intended to be a raw click recorder. It is intended to be a semantic test mining and stabilisation platform that:

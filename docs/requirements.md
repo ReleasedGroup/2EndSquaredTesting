@@ -13,6 +13,8 @@ The platform shall:
 - Generate readable C# Playwright test code and supporting assets from the scenario model.
 - Replay generated tests and attempt deterministic healing when selectors or data drift.
 - Preserve enough artefacts, metadata, and diagnostics to let users review, edit, approve, and regenerate scenarios over time.
+- Support a local, production-like developer environment so the full application can be exercised before changes are pushed or deployed.
+- Prioritise delivery of a usable Blazor Server UI early enough that major workflows can be visually tested throughout development, not only after backend completion.
 
 The platform shall be built with the following solution model:
 
@@ -75,6 +77,7 @@ The v1 platform shall support:
 - Deterministic selector healing workflows
 - Persistent storage of sessions, scenarios, steps, artefacts, and replay history
 - Multi-user authenticated web administration experience through Blazor Server
+- Local developer execution in a production-like stack shape suitable for pre-push and pre-deployment validation
 - Export of generated tests into repository-friendly file structures
 
 ### 3.2 Out of Scope for v1
@@ -1037,6 +1040,8 @@ The Blazor Server application shall provide at least these primary work areas:
 4. Replay and diagnostics workspace
 5. Administration area
 
+The UI shall be implemented early enough in the delivery plan that developers can visually exercise the primary workflows during development. API-only or backend-only completion is not sufficient for the intended v1 delivery workflow.
+
 ### 9.2 Recording Workspace
 
 The recording workspace shall display:
@@ -1248,6 +1253,8 @@ The platform implementation shall include automated coverage for:
 - Healing evaluation
 - Persistence mappings and migrations
 
+The implementation shall also support a local, production-like developer test environment so changes can be exercised end to end before they are pushed to GitHub or deployed. That local environment shall include the real Blazor UI, PostgreSQL, artefact storage, and representative fixture applications unless a specific component is intentionally stubbed for local-only ergonomics.
+
 ### 14.2 Test Layers
 
 At minimum, the repository should include:
@@ -1326,6 +1333,10 @@ The implementation shall support at least:
 - Shared non-production environment
 - Production-like server deployment
 
+The local developer execution profile shall mimic the actual application shape closely enough that a developer can validate the main workflows before pushing changes. At minimum, the local profile should run the ASP.NET Core host with the real Blazor Server UI, PostgreSQL, local artefact storage, and representative fixture applications or seeded test data.
+
+Differences between the local profile and shared/production-like environments shall be minimised and documented explicitly. Developer convenience shortcuts shall not bypass core safety behaviour such as allow-list enforcement, masking, audit logging, and encryption of sensitive stored material unless a local-only exception is intentionally documented and risk-accepted.
+
 ### 16.3 Packaging Direction
 
 Desktop packaging through .NET MAUI Hybrid or Electron is explicitly a future option. The initial architecture shall therefore keep the backend and UI boundaries clean enough that later packaging can host the same application surfaces without re-implementing core recording, generation, or replay services.
@@ -1369,8 +1380,9 @@ The application should be introduced into this repository as a new vertical slic
 
 Phase 1 shall target:
 
+- Local production-like developer environment bootstrap for safe pre-push validation
 - Recording of navigation, click, fill, select, checkbox, and simple assertion-relevant actions
-- Timeline UI
+- Timeline UI and core workflow surfaces sufficient for visual testing by developers
 - Locator ranking
 - Basic scenario persistence with immutable scenario version creation
 - C# Playwright generation
@@ -1416,6 +1428,7 @@ Phase 1 exit:
 - Generated C# Playwright output compiles against the emitted helper library.
 - Replay executes the generated scenario against the same fixture and reports pass/fail per step.
 - URL allow-list enforcement (Section 12.4) and encryption of storage state (Section 12.5) are enforced.
+- A developer can run a local, production-like environment with the Blazor UI and visually exercise the Phase 1 workflow before pushing changes.
 
 Phase 2 exit:
 - Assertion inference produces at least one outcome-oriented assertion suggestion for every save/submit/navigate step in the Phase 1 fixture library.
@@ -1447,6 +1460,7 @@ The implementation shall be considered to satisfy this specification only when a
 10. Generated output remains reproducible bit-for-bit (modulo timestamps declared as non-deterministic) from scenario data plus generation profile plus template version. [FR-GEN-001, FR-GEN-010]
 11. Recording and replay refuse to start against target URLs not present on the administrator-managed allow-list. [12.4]
 12. Observability emits the identifiers listed in 13.1 and permits verification of the performance targets in 15.2.
+13. A developer can run the application locally in a production-like configuration, including the real Blazor UI and PostgreSQL-backed persistence, to validate core workflows before push or deployment. [9.1, 14.1, 16.2]
 
 ## 20. Risks and Constraints
 
@@ -1492,6 +1506,7 @@ The test mining platform shall be introduced into this repository as a new verti
 - The solution shall build with the repository's documented required .NET SDK version. Any SDK upgrade shall be an explicit, documented change.
 - `dotnet restore`, `dotnet build`, and `dotnet test` shall succeed from a clean checkout with no unresolved warnings treated as errors in core projects.
 - Projects shall enable nullable reference types and treat analyzer warnings as errors where practical.
+- The repository should provide a documented local developer startup workflow for running a production-like application profile, including the Blazor UI and PostgreSQL dependency path.
 
 ### 22.3 Continuous Integration
 
