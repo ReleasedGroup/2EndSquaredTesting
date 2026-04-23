@@ -13,6 +13,8 @@ public sealed class ShellHostTests : IClassFixture<ShellHostApplicationFactory>
     }
 
     [Fact]
+    [Trait("Requirement", "12.1")]
+    [Trait("Requirement", "9.1")]
     public async Task Dashboard_WhenAnonymous_ShouldRenderSignInPrompt()
     {
         using var client = CreateClient();
@@ -25,6 +27,8 @@ public sealed class ShellHostTests : IClassFixture<ShellHostApplicationFactory>
     }
 
     [Fact]
+    [Trait("Requirement", "12.1")]
+    [Trait("Requirement", "9.1")]
     public async Task ViewerShell_ShouldHideAuthoringAndAdministrationLinks()
     {
         using var client = CreateClient();
@@ -41,6 +45,23 @@ public sealed class ShellHostTests : IClassFixture<ShellHostApplicationFactory>
     }
 
     [Fact]
+    [Trait("Requirement", "12.1")]
+    [Trait("Requirement", "9.1")]
+    public async Task AuthorShell_ShouldExposeRecordingsWithoutAdministration()
+    {
+        using var client = CreateClient();
+
+        await SignInAsync(client, "author");
+        var response = await client.GetAsync("/dashboard");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.True(response.IsSuccessStatusCode);
+        Assert.Contains("href=\"/recordings\"", html, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("href=\"/administration\"", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    [Trait("Requirement", "12.1")]
     public async Task ViewerAdministrationRequest_ShouldRenderAccessDenied()
     {
         using var client = CreateClient();
@@ -54,6 +75,8 @@ public sealed class ShellHostTests : IClassFixture<ShellHostApplicationFactory>
     }
 
     [Fact]
+    [Trait("Requirement", "12.1")]
+    [Trait("Requirement", "9.1")]
     public async Task AdministratorShell_ShouldExposeAdministrationWorkspace()
     {
         using var client = CreateClient();

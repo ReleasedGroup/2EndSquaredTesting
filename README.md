@@ -85,6 +85,18 @@ The repository is in a planning and transition stage:
 - the concept source exists in `docs/concept.md`
 - the new application implementation may coexist with retained Symphony tooling content during development
 
+## Local Host Shell
+
+The current Sprint 1 vertical slice includes a server-hosted Blazor shell for early visual validation of the product workflows.
+
+Run it locally with:
+
+```powershell
+dotnet run --project src/TestMining.Platform.Host --launch-profile local-shell
+```
+
+The shell uses the local-development personas configured in `src/TestMining.Platform.Host/appsettings.json` so the authenticated navigation experience can be exercised before the production authentication provider is finalized.
+
 ## Working Rule
 
 If there is a conflict between older Symphony-oriented repository documentation and the new product direction, treat `docs/requirements.md` as the authoritative description of the application to be built, while still preserving Symphony-related files as tooling assets unless explicitly instructed otherwise.

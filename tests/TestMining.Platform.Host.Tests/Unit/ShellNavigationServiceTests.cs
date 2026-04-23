@@ -9,6 +9,8 @@ public sealed class ShellNavigationServiceTests
     private readonly ShellNavigationService _service = new();
 
     [Fact]
+    [Trait("Requirement", "12.1")]
+    [Trait("Requirement", "9.1")]
     public void GetVisibleItems_ForViewer_ShouldHideRecordingsAndAdministration()
     {
         var user = CreatePrincipal(AppRoles.Viewer);
@@ -22,6 +24,8 @@ public sealed class ShellNavigationServiceTests
     }
 
     [Fact]
+    [Trait("Requirement", "12.1")]
+    [Trait("Requirement", "9.1")]
     public void GetVisibleItems_ForAdministrator_ShouldShowAllAreas()
     {
         var user = CreatePrincipal(AppRoles.Administrator);

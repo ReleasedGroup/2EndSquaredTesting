@@ -8,6 +8,8 @@ public sealed class LocalDevelopmentAuthOptionsValidatorTests
     private readonly LocalDevelopmentAuthOptionsValidator _validator = new();
 
     [Fact]
+    [Trait("Requirement", "11.3")]
+    [Trait("Requirement", "12.1")]
     public void Validate_ShouldFailForUnknownRole()
     {
         var options = new LocalDevelopmentAuthOptions
@@ -32,6 +34,8 @@ public sealed class LocalDevelopmentAuthOptionsValidatorTests
     }
 
     [Fact]
+    [Trait("Requirement", "11.3")]
+    [Trait("Requirement", "12.1")]
     public void Validate_ShouldFailForExternalMode()
     {
         var options = new LocalDevelopmentAuthOptions
