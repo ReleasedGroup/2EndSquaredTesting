@@ -1,109 +1,88 @@
-# Symphony
+# Test Mining Platform
 
-Symphony is a `.NET 10` service that orchestrates coding-agent work from GitHub issues.
+This repository is being used to build a C#-based semantic test mining platform that records browser interactions, converts them into structured scenarios, and generates maintainable Playwright tests with replay and healing support.
 
-Current scaffold includes:
+The current source of truth for the planned product is [docs/requirements.md](/mnt/c/Users/kenne/Desktop/ReleasedGroup/2EndSquaredTesting/docs/requirements.md). The concept document that informed it is [docs/concept.md](/mnt/c/Users/kenne/Desktop/ReleasedGroup/2EndSquaredTesting/docs/concept.md).
 
-- Worker + HTTP API host (`src/Symphony.Host`)
-- Responsive dashboard UI at `GET /`
-- EF Core + SQLite persistence baseline with migrations
-- Multi-project architecture (`Core`, infrastructure adapters, tests)
-- Runtime endpoints:
-  - `GET /`
-  - `GET /api/v1/health`
-  - `GET /api/v1/runtime`
-  - `GET /api/v1/state`
-  - `GET /api/v1/<issue_identifier>`
-  - `POST /api/v1/refresh`
+## Product Summary
 
-## User Guide
+The application described in this repository is not intended to be a raw click recorder. It is intended to be a semantic test mining and stabilisation platform that:
 
-See the full guide at [docs/UserGuide.md](docs/UserGuide.md).
+- records real user workflows in a browser
+- captures DOM, accessibility, navigation, and runtime context around meaningful actions
+- transforms raw events into structured, intent-rich scenarios
+- infers resilient locators, variable data strategies, and outcome-oriented assertions
+- generates readable C# Playwright tests and supporting helpers
+- replays generated scenarios and provides deterministic healing when selectors drift
 
-Container deployment guidance and sample artifacts are in [docs/ContainerGuide.md](docs/ContainerGuide.md).
+The core design rule is that structured scenarios are the source of truth. Generated code is a derived artefact and must remain reproducible from scenario data and generation settings.
 
-Release bundle installation guidance is in [docs/PackageGuide.md](docs/PackageGuide.md).
+## Intended Stack
 
-## Runtime Behavior
+The requirements currently define this implementation model:
 
-- A Tailwind-powered dashboard now renders orchestration health, live agent activity, tracked issue distribution, rate limits, leases, and per-issue drill-down from the durable API state.
-- GitHub issue normalization now includes linked branch metadata, blocker references, milestone data, and optional PR metadata for prompt rendering and orchestration.
-- SQLite persists workflow snapshots, issue cache, runs, run attempts, sessions, retry queue entries, workspace records, event log entries, leases, and dispatch claims for restart recovery and debugging.
-- Dispatch enforces exact active-state matching, per-state concurrency caps, continuation retries, exponential-backoff retries, and the `Todo` blocker rule.
-- Reconciliation refreshes active issue states every tick, stops non-active or terminal runs, cleans terminal workspaces, and reschedules stalled runs from the last Codex activity timestamp.
-- Codex app-server sessions now support streamed multi-turn execution on a shared thread, permissive auto-approval, structured tool-call failures, and the `github_graphql` client-side tool.
-- Runtime state, tracked issue distribution, recent events, lease snapshots, token totals, and latest rate-limit payloads are available through the HTTP API and are derived from persisted orchestrator state.
+- Backend: ASP.NET Core
+- Frontend: Blazor Server
+- Database: PostgreSQL or SQL Server
+- Browser automation: Microsoft.Playwright for .NET
+- Code generation: Roslyn or Scriban templates
+- Desktop packaging later: .NET MAUI Hybrid or Electron wrapper if needed
 
-## Build and Test
+## Planned Capabilities
 
-```powershell
-& 'C:\Program Files\dotnet\dotnet.exe' restore Symphony.slnx
-& 'C:\Program Files\dotnet\dotnet.exe' build Symphony.slnx
-& 'C:\Program Files\dotnet\dotnet.exe' test Symphony.slnx --no-build
-```
+The platform is expected to include these major areas:
 
-Opt-in real GitHub integration:
+- Recording engine for guided browser-session capture
+- DOM and accessibility analysis
+- Scenario authoring and timeline review
+- Locator ranking and assertion suggestion
+- C# Playwright code generation
+- Replay diagnostics
+- Deterministic healing workflows
+- Persistent storage for sessions, scenarios, artefacts, and replay history
+- Administrative configuration for environments, browser settings, and generation defaults
 
-```powershell
-$env:SYMPHONY_RUN_REAL_INTEGRATION_TESTS = "1"
-$env:GITHUB_TOKEN = "<token>"
-& 'C:\Program Files\dotnet\dotnet.exe' test tests/Symphony.Integration.Tests/Symphony.Integration.Tests.csproj --filter RealIntegrationTests
-```
+## Repository Guidance
 
-## Release Packages
+This repository currently contains existing Symphony-related files and scaffolding. Those files are being retained in the repository because Symphony is a tool used within this project context.
 
-GitHub Actions now provides:
+Symphony guidance for users and agents:
 
-- `ci.yml` for restore/build/test on pushes and pull requests
-- `release-packages.yml` for versioned multi-platform bundles on published GitHub Releases
+- Treat Symphony-related files as retained tool files, not as the application being described in `docs/requirements.md`.
+- Do not rewrite, repurpose, or delete Symphony files unless a task explicitly asks for Symphony/tooling work.
+- Keep Symphony files in the repository even while building the new application.
+- New product work should align to `docs/requirements.md`, not the legacy Symphony README content that previously occupied this file.
 
-Published releases attach self-contained archives for `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`, `osx-x64`, and `osx-arm64`.
+Examples of retained Symphony-related content include:
 
-After extracting a release bundle, run `setup-symphony.cmd` on Windows or `setup-symphony.sh` on macOS/Linux to generate an instance-specific configuration and start Symphony on its own loopback URL.
+- `SPEC.md`
+- `IMPLEMENTATION_PLAN.md`
+- `WORKFLOW.md`
+- `src/Symphony.*`
+- `tests/Symphony.*`
+- `symphony_docs/`
 
-## Running Locally
+## Expected Solution Direction
 
-Set `GITHUB_TOKEN` in the same shell session that will launch the host. With `tracker.api_key: $GITHUB_TOKEN`, Symphony fails fast at startup if that process cannot resolve the variable.
+A likely repository shape for the new application is described in the requirements document and includes logical areas such as:
 
-For local development from the repository root, the checked-in launch profile already points the host at the repo `WORKFLOW.md`:
+- host and Blazor Server UI
+- core domain and scenario contracts
+- recording and Playwright orchestration
+- analysis and inference
+- code generation
+- replay and healing
+- persistence and artefact storage
+- automated tests
 
-```powershell
-& 'C:\Program Files\dotnet\dotnet.exe' run --project src/Symphony.Host
-```
+## Current Status
 
-If you disable launch profiles or want to pass the workflow path explicitly, use the path relative to `src/Symphony.Host`:
+The repository is in a planning and transition stage:
 
-```powershell
-& 'C:\Program Files\dotnet\dotnet.exe' run --project src/Symphony.Host -- ../../WORKFLOW.md
-```
+- the requirements specification exists in `docs/requirements.md`
+- the concept source exists in `docs/concept.md`
+- the new application implementation may coexist with retained Symphony tooling content during development
 
-When the host process starts without an explicit path, the CLI default remains `WORKFLOW.md` in the process working directory.
+## Working Rule
 
-The default SQLite connection string is `Data Source=./data/symphony.db;...`, so `dotnet run --project src/Symphony.Host` creates the database under `src/Symphony.Host/data/` if it does not already exist.
-
-Open the dashboard at `http://127.0.0.1:<port>/` or the raw health probe at `http://127.0.0.1:<port>/api/v1/health`.
-
-HTTP port precedence is:
-
-- CLI `--port <value>`
-- `server.port` in `WORKFLOW.md`
-- standard ASP.NET Core URL configuration when neither override is set
-
-When `--port` or `server.port` is used, Symphony binds loopback on `127.0.0.1`.
-
-## Local Tooling
-
-This repository uses a local `dotnet-ef` tool manifest.
-
-```powershell
-& 'C:\Program Files\dotnet\dotnet.exe' tool restore
-& 'C:\Program Files\dotnet\dotnet.exe' tool run dotnet-ef migrations list --project src/Symphony.Infrastructure.Persistence.Sqlite --startup-project src/Symphony.Host
-```
-
-To rebuild the dashboard CSS after editing the Tailwind source:
-
-```powershell
-Set-Location src/Symphony.Host
-npm install
-npm run build:css
-```
+If there is a conflict between older Symphony-oriented repository documentation and the new product direction, treat `docs/requirements.md` as the authoritative description of the application to be built, while still preserving Symphony-related files as tooling assets unless explicitly instructed otherwise.

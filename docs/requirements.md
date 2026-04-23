@@ -1,10 +1,4 @@
-# Test Mining Platform Requirements Specification
-
-Status: Draft v1
-
-Working title: Test Mining Platform
-
-Primary intent: Provide a browser-based recording, inference, test-generation, replay, and healing system that converts real user interactions into maintainable C# Playwright tests.
+# @EndSquareTesting Requirements Specification
 
 ## 1. Executive Summary
 
@@ -24,10 +18,10 @@ The platform shall be built with the following solution model:
 
 - Backend: ASP.NET Core
 - Frontend: Blazor Server
-- Database: PostgreSQL or SQL Server
+- Database: PostgreSQL
 - Browser automation: Microsoft.Playwright for .NET
 - Code generation: Roslyn or Scriban templates
-- Desktop packaging later: .NET MAUI Hybrid or Electron wrapper if needed
+- Desktop packaging later: .NET MAUI Hybrid or Electron wrapper
 
 The single most important product decision is this: the system shall store structured scenarios as the source of truth, not generated code. Generated code is a derived artefact and must always be reproducible from persisted scenario data plus generation settings.
 
